@@ -81,7 +81,8 @@ def main():
 
                 try:
                     import pandas as pd
-                    pd.to_csv("db.csv", index=False)
+                    df = pd.read_csv(db.values())
+                    df.to_csv("db.csv", index=False)
                 except ImportError:
                     pass
 
@@ -96,5 +97,6 @@ def main():
             print("Data saved. Exiting.")
 
 
+#%%
 if __name__ == '__main__':
     main()
