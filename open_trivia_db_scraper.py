@@ -58,7 +58,8 @@ def fetch_trivia_questions(session: Session, token: str) -> dict:
     response.raise_for_status()  # Raise an error if the request failed
     json_data = response.json()
     if json_data["response_code"] != 0:
-        raise Exception(ERROR_CODES.get(json_data["error"], "Unknown Error"))
+        raise Exception(ERROR_CODES.get(json_data["error"], f"Unknown Error: Response {response.status_code} but"
+                                                            f"response_code: {json_data['response_code']}"))
     return unescape_any(json_data['results'])
 
 
