@@ -49,7 +49,7 @@ def get_new_token(session: Session) -> str:
 
 def fetch_trivia_questions(session: Session, token: str) -> dict:
     """
-    Return 50 questions from opentdb.com.
+    Return 50 questions from opentdb.com and unescape them.
     :param session: requests session
     :param token: obtainable with get_new_token
     :return: dict
@@ -62,11 +62,27 @@ def fetch_trivia_questions(session: Session, token: str) -> dict:
     return unescape_any(json_data['results'])
 
 
-def main():
-    with open('db.json') as f:
-        db = json.loads(f.read())
-        print(f"Loaded {len(db)} questions.")
+def read_db() -> dict:
+    """
+    Load dict from db.json in same folder. If not found, return empty dict.
+    :return: dict
+    """
+    try:
+        with open('db.json') as f:
+            db = json.loads(f.read())
+            print(f"Loaded {len(db)} questions.")
+        return db
+    except (FileNotFoundError, json.decoder.JSONDecodeError) as error:
+        print(error)
+        return {}
 
+
+def main():
+    """
+    Load db.json if present, fetch question from opentdb.com and save to db.json and db.csv.
+    :return:
+    """
+    db = read_db()
     with Session() as session:
         token = get_new_token(session)
 
@@ -84,7 +100,7 @@ def main():
                     df = pd.read_csv(db.values())
                     df.to_csv("db.csv", index=False)
                 except ImportError:
-                    pass
+                    print("pandas not installed, no csv will be saved.")
 
                 # Show progress
                 tqdm.write(f"Fetched {len(results)} questions. Total: {len(db)} questions saved.")
