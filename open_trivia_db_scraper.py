@@ -37,7 +37,7 @@ def unescape_any(obj: StrDictSequence) -> StrDictSequence:
     if isinstance(obj, Sequence):
         return type(obj)(unescape_any(el) for el in obj)
 
-    warnings.warn(f'str, dict, Sequence expected, not {type(obj)}')
+    warnings.warn(f'str | dict | Sequence expected, not {type(obj)}')
     return obj
 
 
